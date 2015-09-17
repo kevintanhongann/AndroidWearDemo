@@ -24,6 +24,14 @@ public class MyActivity extends Activity {
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, new Intent(this, MyActivity.class), 0);
 
+
+        // Create the action
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.ic_launcher,
+                        "Action1", pendingIntent)
+                        .build();
+
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
@@ -36,42 +44,23 @@ public class MyActivity extends Activity {
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("My notification 2")
                         .addAction(R.drawable.ic_launcher, "Reply", pendingIntent)
+                        .extend(new NotificationCompat.WearableExtender().addAction(action))
                         .setContentText("Hello World!");
 
-        // mId allows you to update the notification later on.
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Issue the notification with notification manager.
+        notificationManager.notify(0, mBuilder.build());
 
 
-        // Create a big text style for the second page
-        NotificationCompat.BigTextStyle secondPageStyle = new NotificationCompat.BigTextStyle();
-        secondPageStyle.setBigContentTitle("Page 2")
-                .bigText("A lot of text...");
-
-        // Create second page notification
-        Notification secondPageNotification =
-                new NotificationCompat.Builder(this)
-                        .setStyle(secondPageStyle)
-                        .build();
-
-        Notification summaryNotification = new WearableNotifications.Builder(mBuilder)
-                .setGroup(GROUP_KEY_SAMPLE, WearableNotifications.GROUP_ORDER_SUMMARY)
-                .build();
-
-        // Create a WearablesNotification.Builder to add special functionality for wearables
-        Notification notification =
-                new WearableNotifications.Builder(mBuilder)
-                        .setGroup(GROUP_KEY_SAMPLE)
-                        .addPage(secondPageNotification)
-                        .build();
-
-        // Use the same group as the previous notification
-        Notification notif2 = new WearableNotifications.Builder(mBuilder2)
-                .setGroup(GROUP_KEY_SAMPLE)
-                .build();
-
-        notificationManagerCompat.notify(0, summaryNotification);
-        notificationManagerCompat.notify(1, notification);
-        notificationManagerCompat.notify(2, notif2);
+        /*
+        NotificationCompat.WearableExtender wearableExtender =
+        new NotificationCompat.WearableExtender(notif);
+boolean hintHideIcon = wearableExtender.getHintHideIcon();
+         */
     }
 
 
